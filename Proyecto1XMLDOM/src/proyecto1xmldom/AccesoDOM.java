@@ -64,7 +64,7 @@ public class AccesoDOM {
             
             Node ntitle = documento.createElement("title");//crea etiquetas
             Node ntitle_text = documento.createTextNode(title);//crea el nodo texto
-            ntitle.appendChild(ntitle_text);//añade el titulo a las
+            ntitle.appendChild(ntitle_text);//añade el titulo a las etiquetas
             Node nauthor = documento.createElement("author");
             Node nauthor_text = documento.createTextNode(author);
             nauthor.appendChild(nauthor_text);
@@ -107,29 +107,24 @@ public class AccesoDOM {
         System.out.println("Buscando el Libro" + title + "para borrarlo");
 
         try {
-//Node root=doc.getFirstChild();
             Node raiz = documento.getDocumentElement();
             NodeList nl1 = documento.getElementsByTagName("title");
             Node n1;
             for (int i = 0; i < nl1.getLength(); i++) {
                 n1 = nl1.item(i);
 
-                if (n1.getNodeType() == Node.ELEMENT_NODE) {//redundante por getElementsByTag, no lo es si buscamos getChildNodes()
+                if (n1.getNodeType() == Node.ELEMENT_NODE) {
 
                     if (n1.getChildNodes().item(0).getNodeValue().equals(title)) {
 
                         System.out.println("Borrando el nodo Libro con id" + title);
 
-//n1.getParentNode().removeChild(n1);
-//borra &lt;Titulo&gt; tit &lt;/Titulo&gt;, pero deja Libro y Autor
                         n1.getParentNode().getParentNode().removeChild(n1.getParentNode());
 
                     }
                 }
             }
             System.out.println("Libro borrado");
-//Guardar el arbol DOM en un nuevo archivo para mantener
-
             return 0;
         } catch (Exception e) {
             System.out.println(e);
@@ -153,7 +148,6 @@ public class AccesoDOM {
             // Manejar la conversión de String a int si es necesario
             e.printStackTrace();
         }
-
         return ultimoId;
     }
 }
