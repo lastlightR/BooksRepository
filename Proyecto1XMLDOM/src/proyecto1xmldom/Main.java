@@ -16,6 +16,7 @@ public class Main {
         AccesoDOM acceso = new AccesoDOM();
         File file = new File("./books.xml");
         //añadir aquí llamadas a métodos de AccesoDOM
+        acceso.crearDOM(file);
     }
     
 }

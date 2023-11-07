@@ -25,23 +25,23 @@ public class AccesoDOM {
     
     Document documento;
     
-    public int abrirXMLaDOM (File file){
+    public int crearDOM (File file){
         try{
-            System.out.println("Abriendo archivo XML file y generando DOM....");
+            System.out.println("Abriendo el XML para crear el DOM.....");
 
             //creamos nuevo objeto DocumentBuilder al que apunta la variable factory
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 
             //ignorar comentarios y espacios blancos
-            factory.setIgnoringComments(true);
-            factory.setIgnoringElementContentWhitespace(true);
+            dbf.setIgnoringComments(true);
+            dbf.setIgnoringElementContentWhitespace(true);
             
             //DocumentBuilder.parse genera el DOM en memoria
-            DocumentBuilder builder = factory.newDocumentBuilder();
+            DocumentBuilder builder = dbf.newDocumentBuilder();
             documento = builder.parse(file);
             
             //ahora doc apunta al árbol DOM y podemos recorrerlo
-            System.out.println("DOM creado con éxito.\n");
+            System.out.println("El DOM ha sido creado con éxito.\n");
             return 0;
         } catch (FileNotFoundException ex){
             System.out.println("El archivo no ha sido encontrado. Error: "+ex);
