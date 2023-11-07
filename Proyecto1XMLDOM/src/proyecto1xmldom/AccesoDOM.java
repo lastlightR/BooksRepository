@@ -53,5 +53,107 @@ public class AccesoDOM {
             return -1;
         }
     }
-    
+     public int anadirEnDOM(String title, String author, String publish_date,
+            String genre, String description, Double price) {
+        try {
+            System.out.println("Añadir libro al árbol DOM de title:" + title);
+            
+            String ultimoId = obtenerUltimoId();
+            String [] partes = ultimoId.split("k",3);
+            String nuevoId = "bk" + partes[1];
+            
+            Node ntitle = documento.createElement("title");//crea etiquetas
+            Node ntitle_text = documento.createTextNode(title);//crea el nodo texto
+            ntitle.appendChild(ntitle_text);//añade el titulo a las
+            Node nauthor = documento.createElement("author");
+            Node nauthor_text = documento.createTextNode(author);
+            nauthor.appendChild(nauthor_text);
+            Node npublish_date = documento.createElement("publish_date");
+            Node npublish_date_text = documento.createTextNode(publish_date);
+            npublish_date.appendChild(npublish_date_text);
+            Node ngenre = documento.createElement("genre");
+            Node ngenre_text = documento.createTextNode(genre);
+            ngenre.appendChild(ngenre_text);
+            Node ndescription = documento.createElement("description");
+            Node ndescription_text = documento.createTextNode(description);
+            ndescription.appendChild(ndescription_text);
+            Node nprice = documento.createElement("price");
+            Node nprice_text = documento.createTextNode(price.toString());
+            nprice.appendChild(nprice_text);
+
+            //CREA LIBRO, con atributo y nodos Título y Autor
+            Node nbook = documento.createElement("book");
+            ((Element) nbook).setAttribute("id",nuevoId);
+            nbook.appendChild(ntitle);
+            nbook.appendChild(nauthor);
+            nbook.appendChild(npublish_date);
+            nbook.appendChild(ngenre);
+            nbook.appendChild(ndescription);
+            nbook.appendChild(nprice);
+            nbook.appendChild(documento.createTextNode("\n"));
+            Node raiz = documento.getFirstChild();
+            raiz.appendChild(nbook);
+            System.out.println("Libro insertado DOM");
+            return 0;
+
+        } catch (Exception e) {
+            System.out.println(e);
+            return -1;
+        }
+
+    }
+
+    public int eliminarLibro(String title) {
+        System.out.println("Buscando el Libro" + title + "para borrarlo");
+
+        try {
+//Node root=doc.getFirstChild();
+            Node raiz = documento.getDocumentElement();
+            NodeList nl1 = documento.getElementsByTagName("title");
+            Node n1;
+            for (int i = 0; i < nl1.getLength(); i++) {
+                n1 = nl1.item(i);
+
+                if (n1.getNodeType() == Node.ELEMENT_NODE) {//redundante por getElementsByTag, no lo es si buscamos getChildNodes()
+
+                    if (n1.getChildNodes().item(0).getNodeValue().equals(title)) {
+
+                        System.out.println("Borrando el nodo Libro con id" + title);
+
+//n1.getParentNode().removeChild(n1);
+//borra &lt;Titulo&gt; tit &lt;/Titulo&gt;, pero deja Libro y Autor
+                        n1.getParentNode().getParentNode().removeChild(n1.getParentNode());
+
+                    }
+                }
+            }
+            System.out.println("Libro borrado");
+//Guardar el arbol DOM en un nuevo archivo para mantener
+
+            return 0;
+        } catch (Exception e) {
+            System.out.println(e);
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
+    private String obtenerUltimoId() {
+        String ultimoId = "";
+
+        try {
+            NodeList nodeList = documento.getElementsByTagName("book");
+            int length = nodeList.getLength();
+            if (length > 0) {
+                Node ultimoLibro = nodeList.item(length - 1);
+                String idStr = ((Element) ultimoLibro).getAttribute("id");
+                ultimoId = idStr;
+            }
+        } catch (NumberFormatException e) {
+            // Manejar la conversión de String a int si es necesario
+            e.printStackTrace();
+        }
+
+        return ultimoId;
+    }
 }
