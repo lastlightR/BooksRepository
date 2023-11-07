@@ -56,44 +56,53 @@ public class AccesoDOM {
      public int anadirEnDOM(String title, String author, String publish_date,
             String genre, String description, Double price) {
         try {
-            System.out.println("Añadir libro al árbol DOM de title:" + title);
+            System.out.println("Añadir libro al árbol DOM de título: " + title);
             
             String ultimoId = obtenerUltimoId();
             String [] partes = ultimoId.split("k",3);
-            String nuevoId = "bk" + partes[1];
+            int nuevoNum = Integer.parseInt(partes[1]) +1; //incrementamos el número del ID
+            String nuevoId = "bk" + nuevoNum;
             
+            //nodo title
             Node ntitle = documento.createElement("title");//crea etiquetas
             Node ntitle_text = documento.createTextNode(title);//crea el nodo texto
-            ntitle.appendChild(ntitle_text);//añade el titulo a las
+            ntitle.appendChild(ntitle_text);//añade el titulo a las etiquetas
+            //nodo author
             Node nauthor = documento.createElement("author");
             Node nauthor_text = documento.createTextNode(author);
             nauthor.appendChild(nauthor_text);
+            //nodo publish_date
             Node npublish_date = documento.createElement("publish_date");
             Node npublish_date_text = documento.createTextNode(publish_date);
             npublish_date.appendChild(npublish_date_text);
+            //nodo genre
             Node ngenre = documento.createElement("genre");
             Node ngenre_text = documento.createTextNode(genre);
             ngenre.appendChild(ngenre_text);
+            //nodo description
             Node ndescription = documento.createElement("description");
             Node ndescription_text = documento.createTextNode(description);
             ndescription.appendChild(ndescription_text);
+            //nodo price
             Node nprice = documento.createElement("price");
             Node nprice_text = documento.createTextNode(price.toString());
             nprice.appendChild(nprice_text);
 
-            //CREA LIBRO, con atributo y nodos Título y Autor
+            //crea book con atributo ID y los nodos anteriores
             Node nbook = documento.createElement("book");
-            ((Element) nbook).setAttribute("id",nuevoId);
+            ((Element) nbook).setAttribute("id", nuevoId);
             nbook.appendChild(ntitle);
             nbook.appendChild(nauthor);
             nbook.appendChild(npublish_date);
             nbook.appendChild(ngenre);
             nbook.appendChild(ndescription);
             nbook.appendChild(nprice);
+            
+            //añade el book al árbol DOM
             nbook.appendChild(documento.createTextNode("\n"));
             Node raiz = documento.getFirstChild();
             raiz.appendChild(nbook);
-            System.out.println("Libro insertado DOM");
+            System.out.println("Libro insertado al DOM");
             return 0;
 
         } catch (Exception e) {
@@ -104,26 +113,30 @@ public class AccesoDOM {
     }
 
     public int eliminarLibro(String title) {
-        System.out.println("Buscando el Libro" + title + "para borrarlo");
+        System.out.println("Buscando el libro de título " + title + " para borrarlo.");
 
         try {
-            Node raiz = documento.getDocumentElement();
-            NodeList nl1 = documento.getElementsByTagName("title");
-            Node n1;
-            for (int i = 0; i < nl1.getLength(); i++) {
-                n1 = nl1.item(i);
+            Node raiz = documento.getDocumentElement(); //obtenemos la raíz del DOM
+            NodeList nodeList = documento.getElementsByTagName("title"); //obtenemos la lista de nodos "title"
+            Node node;
+            boolean borrado = false;
+            for (int i = 0; i < nodeList.getLength(); i++) { //recorremos la lista hasta llegar al título
+                node = nodeList.item(i);
 
-                if (n1.getNodeType() == Node.ELEMENT_NODE) {
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
 
-                    if (n1.getChildNodes().item(0).getNodeValue().equals(title)) {
+                    if (node.getChildNodes().item(0).getNodeValue().equals(title)) {
 
-                        System.out.println("Borrando el nodo Libro con título: " + title);
-                        n1.getParentNode().getParentNode().removeChild(n1.getParentNode());
-
+                        System.out.println("Borrando el nodo book con título: " + title);
+                        //volvemos hacia atrás desde título hasta llegar al libro y borrarlo
+                        node.getParentNode().getParentNode().removeChild(node.getParentNode());
+                        System.out.println("Libro borrado");
+                        borrado = true;
                     }
                 }
             }
-            System.out.println("Libro borrado");
+            if (borrado == false) //comprobamos si no se ha encontrado nada
+                System.out.println("No se ha encontrado el libro.");
 
             return 0;
         } catch (Exception e) {
@@ -138,9 +151,9 @@ public class AccesoDOM {
 
         try {
             NodeList nodeList = documento.getElementsByTagName("book");
-            int length = nodeList.getLength();
-            Node ultimoLibro = nodeList.item(nodeList.getLength()-1);
-            ultimoId =  ((Element) ultimoLibro).getAttribute("id");
+            //int length = nodeList.getLength();
+            Node ultimoLibro = nodeList.item(nodeList.getLength()-1); //buscamos el último nodo de la lista
+            ultimoId = ((Element) ultimoLibro).getAttribute("id");
             
             /*
             if (length > 0) {
@@ -149,36 +162,57 @@ public class AccesoDOM {
                 ultimoId = idStr;
             }*/
             
-        } catch (NumberFormatException e) {
-            // Manejar la conversión de String a int si es necesario
-            e.printStackTrace();
+        } catch (NumberFormatException ex) {
+            //manejar la conversión de String a int si es necesario
+            System.out.println("Error del formato del ID: "+ex);
+            ex.printStackTrace();
+        } catch (Exception ex) {
+            System.out.println("Error: "+ex);
+            ex.printStackTrace();
         }
 
         return ultimoId;
     }
+    
     public void pedirUsuario(){
         String title, author,  publish_date,
          genre, description;
         Double price;
         Scanner teclado = new Scanner (System.in);
-        System.out.println("Introduce los datos del nuevo nodo:" );
-        System.out.println("Title:" );
+        
+        //pedimos por pantalla los datos del nuevo nodo al usuario
+        System.out.println("\n-- Introduce los datos del nuevo nodo --" );
+        System.out.println("- Title:" );
         title = teclado.nextLine();
-        System.out.println("Author:" );
+        
+        System.out.println("- Author:" );
         author = teclado.nextLine();
-        System.out.println("Publish date:");
+        
+        System.out.println("- Publish date:");
         publish_date = teclado.nextLine();
-        System.out.println("Genre:");
+        
+        System.out.println("- Genre:");
         genre = teclado.nextLine();
-        System.out.println("Description:" );
+        
+        System.out.println("- Description:" );
         description = teclado.nextLine();
-        System.out.println("Price: ");
-        price = teclado.nextDouble();
-        anadirEnDOM(title, author, publish_date, genre, description, price);
+        
+        System.out.println("- Price: ");
+        try { //comprobamos que se introduce un valor correcto y no un texto al valor price
+            price = teclado.nextDouble();
+            //llamamos a la función para añadir el nuevo libro al árbol DOM
+            anadirEnDOM(title, author, publish_date, genre, description, price);
+        } catch (InputMismatchException ex) {
+            System.out.println("El precio no tiene un valor numérico Double. Error: "+ex);
+            ex.printStackTrace();
+        } catch (Exception ex) {
+            System.out.println("Error: "+ex);
+            ex.printStackTrace();
+        }
       
     }
     
-    public void guardarDOMaArchivo (String archivo) {
+    public void guardarArchivo (String archivo) {
         try{
             Source source = new DOMSource(documento); //origen
             StreamResult result = new StreamResult (new File(archivo)); //destino

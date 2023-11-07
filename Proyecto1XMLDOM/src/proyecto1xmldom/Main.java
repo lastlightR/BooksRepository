@@ -18,7 +18,10 @@ public class Main {
         //añadir aquí llamadas a métodos de AccesoDOM
         acceso.crearDOM(file);
         acceso.eliminarLibro("Paradox Lost");
-        acceso.anadirEnDOM("La vida de Jade", "Robyn", "2002-06-11", "Drama", "Una apasionante aventura" , 89);
+        acceso.anadirEnDOM("La vida de Jade", "Robyn", "2002-06-11", "Drama", "Una apasionante aventura" , 89.95);
+        acceso.pedirUsuario();
+        acceso.eliminarLibro("fdvsgnghhfd"); //para ver que comprueba si se ha encontrado o no
+        acceso.guardarArchivo("./booksDOM.xml");
     }
     
 }
