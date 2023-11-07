@@ -107,28 +107,23 @@ public class AccesoDOM {
         System.out.println("Buscando el Libro" + title + "para borrarlo");
 
         try {
-//Node root=doc.getFirstChild();
             Node raiz = documento.getDocumentElement();
             NodeList nl1 = documento.getElementsByTagName("title");
             Node n1;
             for (int i = 0; i < nl1.getLength(); i++) {
                 n1 = nl1.item(i);
 
-                if (n1.getNodeType() == Node.ELEMENT_NODE) {//redundante por getElementsByTag, no lo es si buscamos getChildNodes()
+                if (n1.getNodeType() == Node.ELEMENT_NODE) {
 
                     if (n1.getChildNodes().item(0).getNodeValue().equals(title)) {
 
-                        System.out.println("Borrando el nodo Libro con id" + title);
-
-//n1.getParentNode().removeChild(n1);
-//borra &lt;Titulo&gt; tit &lt;/Titulo&gt;, pero deja Libro y Autor
+                        System.out.println("Borrando el nodo Libro con título: " + title);
                         n1.getParentNode().getParentNode().removeChild(n1.getParentNode());
 
                     }
                 }
             }
             System.out.println("Libro borrado");
-//Guardar el arbol DOM en un nuevo archivo para mantener
 
             return 0;
         } catch (Exception e) {
@@ -181,5 +176,22 @@ public class AccesoDOM {
         price = teclado.nextDouble();
         anadirEnDOM(title, author, publish_date, genre, description, price);
       
-}
+    }
+    
+    public void guardarDOMaArchivo (String archivo) {
+        try{
+            Source source = new DOMSource(documento); //origen
+            StreamResult result = new StreamResult (new File(archivo)); //destino
+            //declarando el Transformer con el método transform que vamos a usar
+            Transformer transformer = TransformerFactory.newInstance().newTransformer();
+            //propiedad para darle una sangría al archivo
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.transform(source, (javax.xml.transform.Result) result);
+            
+            System.out.println("Archivo creado con éxito.");
+        } catch (Exception ex) {
+            System.out.println("Error: "+ex);
+            ex.printStackTrace();
+        }
+    }
 }
