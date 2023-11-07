@@ -150,4 +150,25 @@ public class AccesoDOM {
         }
         return ultimoId;
     }
+    public void pedirUsuario(){
+        String title, author,  publish_date,
+         genre, description;
+        Double price;
+        Scanner teclado = new Scanner (System.in);
+        System.out.println("Introduce los datos del nuevo nodo:" );
+        System.out.println("Title:" );
+        title = teclado.nextLine();
+        System.out.println("Author:" );
+        author = teclado.nextLine();
+        System.out.println("Publish date:");
+        publish_date = teclado.nextLine();
+        System.out.println("Genre:");
+        genre = teclado.nextLine();
+        System.out.println("Description:" );
+        description = teclado.nextLine();
+        System.out.println("Price: ");
+        price = teclado.nextDouble();
+        anadirEnDOM(title, author, publish_date, genre, description, price);
+      
+}
 }
