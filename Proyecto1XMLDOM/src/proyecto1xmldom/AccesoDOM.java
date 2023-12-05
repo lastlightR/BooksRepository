@@ -23,9 +23,9 @@ import javax.xml.transform.stream.StreamResult;
  */
 public class AccesoDOM {
     
-    Document documento;
+    Document documento; //creamos el documento que inicializaremos para que apunte al árbol DOM
     
-    public int crearDOM (File file){
+    public int crearDOM (File file){ //crea un árbol DOM basándose en un fichero XML
         try{
             System.out.println("Abriendo el XML para crear el DOM.....");
 
@@ -40,7 +40,7 @@ public class AccesoDOM {
             DocumentBuilder builder = dbf.newDocumentBuilder();
             documento = builder.parse(file);
             
-            //ahora doc apunta al árbol DOM y podemos recorrerlo
+            //ahora documento apunta al árbol DOM y podemos recorrerlo
             System.out.println("El DOM ha sido creado con éxito.\n");
             return 0;
         } catch (FileNotFoundException ex){
@@ -54,21 +54,22 @@ public class AccesoDOM {
         }
     }
      public int anadirEnDOM(String title, String author, String publish_date,
-            String genre, String description, Double price) {
+            String genre, String description, Double price) { //función que añade un libro al DOM dados unos parámetros
         try {
             System.out.println("Añadir libro al árbol DOM de título: " + title);
             
+            //asignando un nuevo ID al libro añadido
             String ultimoId = obtenerUltimoId();
-            String [] partes = ultimoId.split("k",3);
+            String [] partes = ultimoId.split("k",3); //el index [1] será la parte numérica
             int nuevoNum = Integer.parseInt(partes[1]) +1; //incrementamos el número del ID
-            String nuevoId = "bk" + nuevoNum;
+            String nuevoId = "bk" + nuevoNum; //juntamos la parte alfabética y numérica
             
             //nodo title
             Node ntitle = documento.createElement("title");//crea etiquetas
             Node ntitle_text = documento.createTextNode(title);//crea el nodo texto
             ntitle.appendChild(ntitle_text);//añade el titulo a las etiquetas
             //nodo author
-            Node nauthor = documento.createElement("author");
+            Node nauthor = documento.createElement("author"); //lo mismo para el resto de etiquetas
             Node nauthor_text = documento.createTextNode(author);
             nauthor.appendChild(nauthor_text);
             //nodo publish_date
@@ -90,7 +91,8 @@ public class AccesoDOM {
 
             //crea book con atributo ID y los nodos anteriores
             Node nbook = documento.createElement("book");
-            ((Element) nbook).setAttribute("id", nuevoId);
+            ((Element) nbook).setAttribute("id", nuevoId); //asignando el ID apañado anteriormente
+            //añadimos los nodos al book
             nbook.appendChild(ntitle);
             nbook.appendChild(nauthor);
             nbook.appendChild(npublish_date);
@@ -102,6 +104,7 @@ public class AccesoDOM {
             nbook.appendChild(documento.createTextNode("\n"));
             Node raiz = documento.getFirstChild();
             raiz.appendChild(nbook);
+            
             System.out.println("Libro insertado al DOM");
             return 0;
 
@@ -112,18 +115,18 @@ public class AccesoDOM {
 
     }
 
-    public int eliminarLibro(String title) {
+    public int eliminarLibro(String title) { //elimina un libro del DOM por título
         System.out.println("Buscando el libro de título " + title + " para borrarlo.");
 
         try {
             Node raiz = documento.getDocumentElement(); //obtenemos la raíz del DOM
             NodeList nodeList = documento.getElementsByTagName("title"); //obtenemos la lista de nodos "title"
             Node node;
-            boolean borrado = false;
+            boolean borrado = false; //variable para comprobar si se ha borrado algo
             for (int i = 0; i < nodeList.getLength(); i++) { //recorremos la lista hasta llegar al título
                 node = nodeList.item(i);
 
-                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                if (node.getNodeType() == Node.ELEMENT_NODE) { //comprobamos que el nodo es de tipo elemento
 
                     if (node.getChildNodes().item(0).getNodeValue().equals(title)) {
 
@@ -146,14 +149,15 @@ public class AccesoDOM {
         }
     }
 
-    private String obtenerUltimoId() {
+    private String obtenerUltimoId() { //encuentra el último ID para poder incrementarlo a posteriori de ser necesario
         String ultimoId = "";
 
         try {
+            //creamos una lista de nodos con todos los libros
             NodeList nodeList = documento.getElementsByTagName("book");
             //int length = nodeList.getLength();
             Node ultimoLibro = nodeList.item(nodeList.getLength()-1); //buscamos el último nodo de la lista
-            ultimoId = ((Element) ultimoLibro).getAttribute("id");
+            ultimoId = ((Element) ultimoLibro).getAttribute("id"); //obtenemos el ID
             
             /*
             if (length > 0) {
@@ -174,7 +178,8 @@ public class AccesoDOM {
         return ultimoId;
     }
     
-    public void pedirUsuario(){
+    public void pedirUsuario(){ //para pedir al usuario que introduzca los datos de un nuevo libro
+        //establecemos los elementos del libro
         String title, author,  publish_date,
          genre, description;
         Double price;
@@ -212,7 +217,7 @@ public class AccesoDOM {
       
     }
     
-    public void guardarArchivo (String archivo) {
+    public void guardarArchivo (String archivo) { //guarda el árbol DOM con sus cambios en un fichero
         try{
             Source source = new DOMSource(documento); //origen
             StreamResult result = new StreamResult (new File(archivo)); //destino
@@ -220,6 +225,7 @@ public class AccesoDOM {
             Transformer transformer = TransformerFactory.newInstance().newTransformer();
             //propiedad para darle una sangría al archivo
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            //transform() utiliza el origen (árbol DOM) y destino establecidos
             transformer.transform(source, (javax.xml.transform.Result) result);
             
             System.out.println("Archivo creado con éxito.");

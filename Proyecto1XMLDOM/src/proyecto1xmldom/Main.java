@@ -21,7 +21,7 @@ public class Main {
         acceso.anadirEnDOM("La vida de Jade", "Robyn", "2002-06-11", "Drama", "Una apasionante aventura" , 89.95);
         acceso.pedirUsuario();
         acceso.eliminarLibro("fdvsgnghhfd"); //para ver que comprueba si se ha encontrado o no
-        acceso.guardarArchivo("./booksDOM.xml");
+        acceso.guardarArchivo("./booksDOM.xml"); //guardamos el un archivo XML por separado
     }
     
 }
